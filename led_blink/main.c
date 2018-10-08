@@ -1,29 +1,18 @@
-#include "stm32f10x.h"
+#include "libopencm3/stm32/rcc.h"
+#include "libopencm3/stm32/gpio.h"
 
-void ConfigureGPIOB3(void)
-{
-    RCC->AHBENR |= RCC_APB2ENR_IOPAEN;
 
-    GPIOB->ODR = GPIO_MODER_MODER3_0;
-    GPIOB->OTYPER = 0x0000;
-    GPIOB->PUPDR = 0x000000000;
-}
-
-// Main -----------------------------------------------------------------------
 int main(void)
 {
-    ConfigureGPIOB3();
-    
-    // Loop forever
-    while(1){
-		if(GPIOB->ODR & GPIO_ODR_3){
-			GPIOB->ODR &= ~GPIO_ODR_3;
-		}else{
-			GPIOB->ODR |= GPIO_ODR_3;
-		}
+	rcc_periph_clock_enable(RCC_GPIOA);
 
-		for (int i = 0; i < 1000; i++)
-			;
+	gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO5);
+
+    while(1){
+		gpio_toggle(GPIOA, GPIO5);
+
+		for (int i = 0; i < 800000; i++)
+			__asm__("nop");
     }
     return 0;
 }
