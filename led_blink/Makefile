@@ -36,5 +36,8 @@ $(TARGET).out: $(OBJECTS)
 
 .PHONY: clean flash
 
+flash:
+	st-flash write $(TARGET).bin 0x8000000
+
 clean:
 	rm -rf *o *.out *.bin
